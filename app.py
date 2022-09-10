@@ -1,7 +1,20 @@
 import os
-from flask import Flask
+from flask import Flask, request, jsonify
+from werkzeug.utils import secure_filename
+import module as md
+import time
+
 
 app = Flask(__name__)
+app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg'])
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+
+timestr = time.strftime("%Y%m%d")
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
 @app.route("/")
@@ -12,12 +25,57 @@ def index():
     }
 
 
+@app.route("/transfer", methods=["POST"])
+def transfer():
+    if request.method == "POST":
+        input_image = request.files["input_image"]
+        if input_image and allowed_file(input_image.filename):
+            filename = secure_filename(timestr + "_" + input_image.filename)
+            input_image.save(os.path.join(
+                app.config['UPLOAD_FOLDER'], filename))
+            uploaded = md.upload_input_image_to_storage_bucket(
+                image=input_image, filename=filename)
+            json = {
+                "status_code": 200,
+                "message": "Success uploading image!",
+                "data": uploaded
+            }
+            return jsonify(json)
+        else:
+            return {
+                "status_code": 400,
+                "message": "Please upload an image!"
+            }
+    else:
+        return {
+            "status_code": 400,
+            "message": "Use POST method!"
+        }
+
+
+@app.errorhandler(400)
+def bad_request(error):
+    return {
+        "status_code": 400,
+        "error": error,
+        "message": "Client side error!"
+    }, 400
+
+
 @app.errorhandler(404)
 def not_found(error):
     return {
         "status_code": 404,
-        "message": "URL not found"
+        "message": "URL not found!"
     }, 404
+
+
+@app.errorhandler(405)
+def method_not_allowed(error):
+    return {
+        "status_code": 405,
+        "message": "Check the exisiting allowed method!"
+    }, 405
 
 
 @app.errorhandler(500)
