@@ -79,14 +79,13 @@ def run_style_transform(style_bottleneck, preprocessed_content_image):
     return stylized_image
 
 
-def imshow(image, title=None):
-    plt.figure(figsize=(3, 3))
+def imshow(image, filename, title=None):
+    plt.figure(figsize=(5, 5))
     if len(image.shape) > 3:
         image = tf.squeeze(image, axis=0)
     plt.axis('off')
     plt.imshow(image)
-    plt.savefig(fname="results/"+timestr+".jpg",
+    plt.savefig(fname="results/"+filename,
                 bbox_inches='tight', pad_inches=0)
-    imshow.filename = timestr + ".jpg"
     image_path = "results/" + timestr + ".jpg"
     return image_path
