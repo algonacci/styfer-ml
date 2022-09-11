@@ -33,8 +33,15 @@ def transfer():
             filename = secure_filename(timestr + "_" + input_image.filename)
             input_image.save(os.path.join(
                 app.config['UPLOAD_FOLDER'], filename))
+            image = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             uploaded = md.upload_input_image_to_storage_bucket(
                 image=input_image, filename=filename)
+            content_image = md.load_image(image)
+            style_image = md.load_image("rural.jpg")
+            preprocessed_content_image = md.preprocess_image(
+                content_image, 384)
+            preprocessed_style_image = md.preprocess_image(
+                style_image, 256)
             json = {
                 "status_code": 200,
                 "message": "Success uploading image!",
