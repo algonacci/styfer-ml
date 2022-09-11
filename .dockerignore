@@ -6,3 +6,5 @@ README.md
 __pycache__
 .pytest_cache
 LICENSE
+uploads/
+results/
