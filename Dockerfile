@@ -9,4 +9,6 @@ COPY . ./
 
 RUN pip install -r requirements.txt
 
+RUN PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+
 CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
