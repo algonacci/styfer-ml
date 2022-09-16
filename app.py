@@ -19,7 +19,7 @@ def allowed_file(filename):
 
 
 @app.route("/")
-@cross_origin
+@cross_origin()
 def index():
     return {
         "status_code": 200,
@@ -28,7 +28,7 @@ def index():
 
 
 @app.route("/transfer", methods=["POST"])
-@cross_origin
+@cross_origin()
 def transfer():
     if request.method == "POST":
         input_image = request.files["input_image"]
@@ -76,7 +76,7 @@ def transfer():
 
 
 @app.errorhandler(400)
-@cross_origin
+@cross_origin()
 def bad_request(error):
     return {
         "status_code": 400,
@@ -86,7 +86,7 @@ def bad_request(error):
 
 
 @app.errorhandler(404)
-@cross_origin
+@cross_origin()
 def not_found(error):
     return {
         "status_code": 404,
@@ -95,7 +95,7 @@ def not_found(error):
 
 
 @app.errorhandler(405)
-@cross_origin
+@cross_origin()
 def method_not_allowed(error):
     return {
         "status_code": 405,
@@ -104,7 +104,7 @@ def method_not_allowed(error):
 
 
 @app.errorhandler(500)
-@cross_origin
+@cross_origin()
 def internal_server_error(error):
     return {
         "status_code": 500,
